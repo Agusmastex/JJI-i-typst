@@ -63,13 +63,14 @@ Palabras clave: Palabra 1, Palabra 2, Palabra 3, Palabra 4, Palabra 5.
 // #counter(page).update(1)
 
 = Introducción
-Con el accidente nuclear de Fukushima en 2011, inició un proceso de redirección de los sistemas de seguridad activos a pasivos.
-Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos. 
-// @IAEA-TECDOC-626
+Con el accidente nuclear de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear.
+Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos. 
+@IAEA-TECDOC-626
 
-La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs). En el caso de que un evento como este sea acompañado por una ausencia de una fuente de energía eléctrica, tanto por parte de la red como por generadores independientes, un sistema de refrigeración activo no cumpliría su función de disipar el calor residual del núcleo. Este fue el caso del accidente de Fukushima. 
+La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs).
+En el caso de que un evento como este sea acompañado por la ausencia de una fuente de energía eléctrica, sea por parte de la red o por generadores independientes, un sistema de refrigeración activo no cumpliría su función de disipar el calor residual del núcleo. Este fue el caso del accidente de Fukushima. 
 
-Dado esto, la implementación de sistemas de refrigeración pasivos en los reactores nucleares es crucial, de modo a lograr disipar el calor residual de la reacción nuclear por un lapso de tiempo suficiente para dar lugar a que puedan tomarse medidas correctivas.
+Dado esto, la implementación de sistemas de refrigeración pasivos en los reactores nucleares es crucial, de modo a lograr disipar el calor residual de la reacción nuclear por un lapso de tiempo suficiente para dar lugar a que puedan tomarse medidas correctivas necesarias para evitar una catástrofe nuclear.
 
 Un diseño común utilizado para refrigerar el núcleo en caso de accidentes es el Ciclo de Circulación Natural (_Natural Circulation Loop_, NCL).
 Los NCLs impulsan el flujo de agua refrigerante utilizando únicamente el calor del núcleo como fuente de energía.
@@ -78,25 +79,31 @@ El flujo ocurre debido a diferencias de densidad causadas tanto por cambios en l
 En la Figura
 // @loop
 puede observarse un diagrama de un NCL prototípico.
-La energía ingresa en el sistema mediante un calentador, que en el caso de un reactor nuclear sería el núcleo. Esto produce un aumento de la temperatura en el fluido refrigerante, lo que a su vez produce una disminución de su densidad.
+La energía ingresa en el sistema mediante un calentador, que representa el sistema cuyo calor desea disiparse. Esto produce un aumento de la temperatura en el fluido refrigerante, lo que a su vez produce una disminución de su densidad.
 Por fuerzas de flotación, el agua se eleva a través del tramo vertical de la tubería, y continúa su camino hasta llegar al condensador.
 En el condensador el agua vuelve a enfriarse, disminuyendo su temperatura y aumentando nuevamente su densidad. 
-Por fuerzas de gravedad, el agua cae nuevamente por la tubería vertical y se encamina al calentador, completando el ciclo.
+Por fuerzas de gravedad, el agua cae por la tubería vertical y se encamina al calentador, completando el ciclo.
 
-Los NCLs pueden ser diseñados para operar tanto en régimen monofásico como bifásico. En el régimen monofásico, el agua se mantiene en todo momento en forma líquida, y las fuerzas de flotación se manifiestan enteramente por la expansión térmica del líquido. En el régimen bifásico se permite que el agua experimente un cambio de fase, vaporizándose parcialmente. En este caso las fuerzas de flotación son producto también del cambio abrupto de densidad producido por la presencia de la fase vapor.
+Los NCLs pueden ser diseñados para operar tanto en régimen monofásico como bifásico. En el régimen monofásico, el agua se mantiene en todo momento en forma líquida, y las fuerzas de flotación se manifiestan enteramente por la expansión térmica del líquido. En el régimen bifásico se permite que el agua experimente un cambio de fase, vaporizándose parcialmente. En este caso las fuerzas de flotación son producto también del cambio abrupto de densidad producido por la aparición de la fase vapor.
 
-Los NCLs monofásicos se hallan restringidos por el criterio de la temperatura de saturación
-// @bhattacharya. 
+Los NCLs monofásicos se hallan restringidos por el criterio de la temperatura de saturación.
+@bhattacharyya
 De este modo existe un gran interés en modelar los fenómenos bifásicos emergentes que tienen lugar en los NCLs bifásicos.
 
 El modelado de flujo bifásico presenta dificultades matemáticas, en tanto es necesario rastrear las múltiples interfaces deformables entre las fases y tomar en cuenta las discontinuidades en las propiedades del fluido que ocurren en ellas.
 
-Debido a esto, la metología común en el modelado de flujos bifásicos en tuberías es el de promediar las cantidades en la sección transversal, obteniéndose un modelo unidimensional. Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_.
+Debido a esto, la metología comúnmente utilizada en el modelado de flujos bifásicos en tuberías es el de promediar las cantidades en la sección transversal, obteniéndose un modelo unidimensional. Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_.
 
-Existen ya una diversidad de resolvedores complejos de uso comercial
-// @RELAP
+Existen ya una diversidad de resolvedores complejos de uso comercial como
+RELAP5 @RELAP,
+TRACE 
+// @TRACE
+y 
+CATHARE
+// @CATHARE
+,
 que modelan el flujo bifásico 1D. En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM (_Homogeneous Equilibrium Model_) en el lenguaje de programación Julia
-// @julia .
+@Julia .
 
 El trabajo presenta un modelo de flujo en estado estacionario. Esta decisión se fundamenta tanto en que las mediciones disponibles en la literatura analizan al sistema cuando ya alcanzó el estado estacionario, como en el hecho de que las condiciones de frontera elegidas producen un estado estacionario natural. Las inestabilidades transitorias emergen de analizar el sistema completo.
 
