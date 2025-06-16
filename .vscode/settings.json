@@ -1,0 +1,56 @@
+{
+    "workbench.colorTheme": "Absent Light (rainglow)",
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "keyword.control",
+                "settings": {
+                    "foreground": "#D73A49"
+                }
+            },
+            {
+                "scope": "string",
+                "settings": {
+                    "foreground": "#298E0D"
+                }
+            },
+            {
+                "scope": "entity.name.function",
+                "settings": {
+                    "foreground": "#4B69C6"
+                }
+            },
+            {
+                "scope": "constant.numeric",
+                "settings": {
+                    "foreground": "#B60157"
+                }
+            },
+            {
+                "scope": "variable",
+                "settings": {
+                    "foreground": "#19181F"
+                }
+            },
+            {
+                "scope": "markup.bold",
+                "settings": {
+                    "foreground": "#19181F",
+                    "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "markup.heading",
+                "settings": {
+                    "foreground": "#19181F",
+                    "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "comment",
+                "settings": {
+                    "foreground": "#8A8A8A"
+                }
+            },
+        ],
+}}
