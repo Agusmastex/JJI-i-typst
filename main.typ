@@ -130,15 +130,15 @@ En este trabajo, se presenta la implementación numérica de un modelo simplific
 
 = Objetivos
 *Objetivo general* \
-// == Objetivo general
-Implementar y validar un resolvedor de flujo agua-vapor en estado estacionario en una tubería vertical utilizando el modelo HEM 1D.
+// Implementar y validar un resolvedor de flujo agua-vapor en estado estacionario en una tubería vertical utilizando el modelo HEM 1D.
+Explorar la validez del modelo HEM para modelar flujos de agua-vapor en estado estacionario en un ánulo vertical.
 
 *Objetivos específicos* \
-// == Objetivos específicos
-- Derivar las ecuaciones de conservación de masa, cantidad de movimiento y energía para un flujo bifásico agua-vapor en una tubería vertical.
+- Derivar las ecuaciones 1D de conservación de masa, cantidad de movimiento y energía para un flujo bifásico agua-vapor en un ánulo vertical.
 - Elegir un esquema de discretización y un método numérico para la resolución de las ecuaciones.
 - Implementar el método numérico en el lenguaje de programación Julia.
-- Validar el modelo y la implementación empleando datos experimentales de la literatura.
+// - Validar el modelo y la implementación empleando datos experimentales de la literatura.
+- Comparar los resultados del modelo con resultados de otros códigos de simulación y datos experimentales de la literatura.
 
 = Materiales y Métodos
 
@@ -151,7 +151,7 @@ Implementar y validar un resolvedor de flujo agua-vapor en estado estacionario e
 
 
 == Modelado matemático
-Se estudió una subsección de un NCL: una tubería vertical de 5.03 m con un tramo inicial de 3 m a través de la cual ingresa calor uniformemente, y donde el resto de la tubería es adiabática.
+Se estudió el flujo bifásico agua-vapor en estado estacionario en un ánulo vertical con un tramo inicial a través de la cual ingresa calor uniformemente, considerando al resto del ánulo como adiabático.
 
 === _Homogeneous Equilibrium Model_ 
 
@@ -159,7 +159,7 @@ Partiendo de las ecuaciones de conservación de masa, cantidad de movimiento y e
 
 Se impuso equilibrio termodinámico instantáneo entre las dos fases, así como el no-deslizamiento entre fases, de modo a que ambas la fase líquida y la fase vapor circulen con la misma velocidad.
 
-Las ecuaciones gobernantes resultantes son las ecuaciones encontradas en la literatura para el modelo HEM:
+Las ecuaciones gobernantes resultantes son las encontradas en la literatura para el modelo HEM en estado estacionario:
 
 $
 d/(d z) (rho v) = 0 \
@@ -169,6 +169,16 @@ d/(d z) (rho h v) = v (d p)/(d z) + Q/(A L_h) \
 $
 
 Donde $z$ es la posición axial a lo largo del sistema, y $rho$, $v$, $p$ y $h$ representan la densidad, la velocidad, la presión y la entalpía de la mezcla agua-vapor, respectivamente.
+
+Del mismo modo, $D_h$ y $A$ representan el diámetro hidráulico y el área de flujo del ánulo.
+$L_h$ es la longitud de la región calentada; y $f$ es el factor de fricción bifásico, que se calcula utilizando el modelo propuesto por #cite(<churchill>, form: "prose"), según:
+
+$ f = 8[(8/"Re" + (f_1 + f_2)^(-1.5))]^(1/12) $
+$ f_1 = {-2.457 ln[(7/"Re")^0.9 + 0.27 epsilon/D_h]}^16 $ 
+$ f_2 = (37530/"Re")^16 $
+
+Donde $epsilon$ representa la rugosidad de las paredes del ánulo.
+
 
 === Propiedades termodinámicas
 
@@ -232,7 +242,8 @@ $ (partial bold(F))/(partial x_j) approx (bold(F)(bold(Q) + delta bold(e)_j) - b
 Donde $bold(e)_j$ es la $j$-ésima columna de la matriz identidad.
 
 === Experimentos numéricos
-Se evaluó el desempeño del modelo HEM comparándolo con las mediciones experimentales de #cite(<ozar>, form: "prose") y con los resultados de simulación de RELAP5/MOD3.3 producidos por #cite(<RELAP-2016>, form: "prose") en dos escenarios distintos. Las condiciones utilizadas en cada escenario se resumen en la @conditions.
+Se evaluó el desempeño del modelo HEM comparándolo con las mediciones experimentales de #cite(<ozar>, form: "prose") y con los resultados de simulación de RELAP5/MOD3.3 producidos por #cite(<RELAP-2016>, form: "prose") en dos escenarios distintos.
+En ambos escenarios se simuló la entrada de agua líquida subenfriada, con distintos valores de presión $P_"in"$, velocidad $v_"in"$, subenfriamiento $Delta T_"sub"$ en la entrada al ánulo, y con distintos valores de densidad de flujo de calor $q''$ provista por el calentador.
 
 // #table(
 //   columns: 4,
@@ -248,13 +259,17 @@ Se evaluó el desempeño del modelo HEM comparándolo con las mediciones experim
 table(
   columns: 5,
   stroke: none,
-  align: center,
+  align: center+horizon,
   table.hline(),
-  [Caso],
+  table.cell(rowspan: 2)[Caso],
   [$P_"in"$],       
   [$v_"in"$],       
   [$Delta T_"sub"$],
   [$q'' ""$],       
+  [[kPa]],
+  [[m/s]],
+  [[ºC]],
+  [[kW/m2]],
   table.hline(),
   [1],
   [498], [0.24], [30], [156],
@@ -262,7 +277,7 @@ table(
   [181], [0.24], [19], [56],
   table.hline(),
 ),
-  caption: []
+  caption: [Condiciones experimentales \ simuladas]
 ) <conditions>
 
 =  Resultados y Discusión
@@ -270,19 +285,25 @@ En las Figuras 1 y 2 se observan los resultados de los dos casos analizados.
 
 Puede verse que el modelo HEM reproduce con alta fidelidad la temperatura alcanzada por la mezcla agua-vapor.
 
-Del mismo modo, la predicción del perfil de presión es satisfactoria al principio, pero en el punto de cambio de pendiente sobrepredice la presión de la mezcla agua-vapor.
-Esto puede explicarse teniendo en cuenta que este cambio de pendiente ocurre en el punto donde empieza el cambio de fase. De este modo, el modelo HEM predice correctamente la presión del sistema mientras el sistema se mantenga en estado líquido, y sufre de errores en cuanto aparece la fase vapor.
+Del mismo modo, la predicción del perfil de presión es satisfactoria en un primer tramo, pero en el punto de cambio de pendiente sobrepredice la presión de la mezcla agua-vapor.
+Este cambio de pendiente ocurre en el punto donde empieza el cambio de fase. De este modo, el modelo HEM predice correctamente la presión del sistema mientras el sistema se mantenga en estado líquido, y subestima la caída de presión en cuanto aparece la fase vapor.
 
-Los problemas del modelo HEM quedan evidenciados en los resultados de la predicción del perfil de la fracción de vacío.
+Esto tiene su explicación en que la introducción de la fase vapor trae consigo nuevas fuerzas de fricción.
+Las burbujas o los _slugs_ de vapor producen un impedimento al flujo, lo cual trae consigo una caída de presión mayor asociada.
+Esto podría corregirse seleccionando un modelo para el factor de fricción que refleje esta dinámica característica del flujo bifásico.
+
+Las limitaciones del modelo HEM quedan evidenciadas en los resultados de la predicción del perfil de la fracción de vacío.
 
 En la @subcooled pueden observarse las falencias del modelo HEM en capturar fenómenos de ebullición subenfriada y condensación.
 
 Mientras que se sigue capturando el fenómeno general, el modelo HEM no toma en cuenta los efectos de la ebullición subenfriada _(subcooled boiling)_.
 El cambio de fase, en lugar de producirse gradualmente debido a la generación de vapor previa a la saturación, ocurre bruscamente cuando la temperatura de saturación es alcanzada.
 Asimismo, la fracción de vapor máxima alcanzada es sobrepredicha debido a que el modelo HEM no toma en cuenta efectos de condensación.
-Esto es, como toda la mezcla se halla en equilibrio termodinámico y la fracción de vacío es calculada exclusivamente a partir de la presión y la temperatura de la mezcla, no se permite el retorno de la fase vapor a fase líquida.
 
-En la @flashing del mismo modo se observa que el modelo HEM es incapaz de reproducir el leve aumento en la fracción de vacío en la sección calentada debido a la ebullición subenfriada. Sin embargo, a diferencia de los resultados de RELAP5/MOD3.3, sí captura la vaporización flash instantánea que se produce por el descenso de la presión.
+Esto es, como la fracción de vacío es calculada exclusivamente a partir de la presión y temperatura de la mezcla, no posee una ecuación de transporte asociada a ella, y no es posible capturar fenómenos de generación (ebullición subenfriada) y consumo (condensación) mediante modelos asociados al término de fuente en su ecuación de transporte.
+
+En la @flashing del mismo modo se observa que el modelo HEM es incapaz de reproducir el pequeño aumento en la fracción de vacío en la sección calentada debido a la ebullición subenfriada.
+Sin embargo, a diferencia de los resultados de RELAP5/MOD3.3, sí captura la vaporización instantánea _(flash)_ que se produce por el descenso de la presión.
 
 #place(
   auto,
@@ -290,7 +311,7 @@ En la @flashing del mismo modo se observa que el modelo HEM es incapaz de reprod
   float: true,
   [#figure(
     image("figs/fig_3.svg"),
-    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el Caso 1.],
+    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el caso 1.],
 
   ) <subcooled>]
 )
@@ -301,7 +322,7 @@ En la @flashing del mismo modo se observa que el modelo HEM es incapaz de reprod
   float: true,
   [#figure(
     image("figs/fig_8.svg"),
-    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el Caso 2.],
+    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el caso 2.],
 
   ) <flashing>]
 )
