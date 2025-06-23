@@ -69,15 +69,15 @@ Palabras clave: Palabra 1, Palabra 2, Palabra 3, Palabra 4, Palabra 5.
 
 Con el accidente de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear.
 // @moving-to-passive-designs
-@IAEA-SSR21
+@IAEA-SSR21.
 // @role-of-passive-severe-accident
 Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos. 
-@IAEA-TECDOC-626
+@IAEA-TECDOC-626.
 
 La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs).
-@ESBWR-LOCA
+@ESBWR-LOCA.
 En el caso de que un evento como este sea acompañado por la ausencia de una fuente de energía eléctrica, sea por parte de la red o por generadores independientes, un sistema de refrigeración activo no cumpliría su función de disipar el calor residual del núcleo. Este fue el caso del accidente de Fukushima. 
-@Fukushima-book
+@Fukushima-book.
 
 Dado esto, la implementación de sistemas de refrigeración pasivos en los reactores nucleares es crucial, de modo a lograr disipar el calor residual de la reacción nuclear por un lapso de tiempo suficiente para dar lugar a que puedan tomarse medidas correctivas necesarias para evitar una catástrofe nuclear.
 
@@ -85,7 +85,7 @@ Un diseño común utilizado para refrigerar el núcleo en caso de accidentes es 
 Los NCLs impulsan el flujo de agua refrigerante utilizando únicamente el calor del núcleo como fuente de energía.
 El flujo ocurre debido a diferencias de densidad causadas tanto por cambios en la temperatura, como cambios de fase. 
 
-En la
+En la Figura
 // @loop
 puede observarse un diagrama de un NCL prototípico.
 La energía ingresa en el sistema mediante un calentador, que representa el sistema cuyo calor desea disiparse. Esto produce un aumento de la temperatura en el fluido refrigerante, lo que a su vez produce una disminución de su densidad.
@@ -269,7 +269,7 @@ table(
   [[kPa]],
   [[m/s]],
   [[ºC]],
-  [[kW/m2]],
+  [[kW/m#super[2]]],
   table.hline(),
   [1],
   [498], [0.24], [30], [156],
@@ -330,8 +330,10 @@ Sin embargo, a diferencia de los resultados de RELAP5/MOD3.3, sí captura la vap
 
 = Conclusiones
 
+#pagebreak()
+
 #bibliography(
   "references.bib",
   title: "Referencias Bibliográficas",
-  style: "apa"
+  style: "apa-no-doi-no-issue.csl"
 )
