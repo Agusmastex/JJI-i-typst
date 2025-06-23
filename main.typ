@@ -72,7 +72,7 @@ Con el accidente de Fukushima en 2011, inició un proceso de transición de los 
 @IAEA-SSR21
 // @role-of-passive-severe-accident
 Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos. 
-// @IAEA-TECDOC-626
+@IAEA-TECDOC-626
 
 La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs).
 @ESBWR-LOCA
@@ -110,24 +110,21 @@ Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_.
 
 Existen ya una diversidad de resolvedores complejos de uso comercial como
 RELAP5
-// @RELAP
-,
-TRACE 
-// @TRACE
+@RELAP
 y 
-CATHARE
-// @CATHARE
+TRACE 
+@TRACE
 ,
 que modelan el flujo bifásico 1D en los sistemas térmico-hidráulicos de un reactor nuclear.
 
 En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM _(Homogeneous Equilibrium Model)_ en el lenguaje de programación Julia.
 
-El trabajo presenta un modelo de flujo en estado estacionario.
-Esta decisión se fundamenta tanto en que las mediciones disponibles en la literatura analizan al sistema cuando ya alcanzó el estado estacionario, como en el hecho de que las condiciones de frontera elegidas producen un estado estacionario natural.
-Las inestabilidades transitorias emergen de analizar el sistema completo.
+// El trabajo presenta un modelo de flujo en estado estacionario.
+// Esta decisión se fundamenta tanto en que las mediciones disponibles en la literatura analizan al sistema cuando ya alcanzó el estado estacionario, como en el hecho de que las condiciones de frontera elegidas producen un estado estacionario natural.
+// Las inestabilidades transitorias emergen de analizar el sistema completo.
 
-El dominio computacional consiste de una subsección de un NCL, la tubería vertical a través de la cual el fluido recibe la energía del calentador y asciende.
-La elección de este dominio restringido se justifica en la disponibilidad de mediciones experimentales para esta subsección del NCL que se utilizaron para validar el modelo y su implementación.
+// El dominio computacional consiste de una subsección de un NCL, la tubería vertical a través de la cual el fluido recibe la energía del calentador y asciende.
+// La elección de este dominio restringido se justifica en la disponibilidad de mediciones experimentales para esta subsección del NCL que se utilizaron para validar el modelo y su implementación.
 
 // Como trabajo futuro, se podrán utilizar los resultados de este modelo para realizar un análisis del sistema completo y transitorio del NCL.
 
@@ -154,16 +151,24 @@ Implementar y validar un resolvedor de flujo agua-vapor en estado estacionario e
 
 
 == Modelado matemático
+Se estudió una subsección de un NCL: una tubería vertical de 5.03 m con un tramo inicial de 3 m a través de la cual ingresa calor uniformemente, y donde el resto de la tubería es adiabática.
+
 === _Homogeneous Equilibrium Model_ 
+
+Partiendo de las ecuaciones de conservación de masa, cantidad de movimiento y energía de la mezcla agua-vapor, mediante un promediado en la sección transversal se obtuvieron las ecuaciones de conservación 1D.
+
+Se impuso equilibrio termodinámico instantáneo entre las dos fases, así como el no-deslizamiento entre fases, de modo a que ambas la fase líquida y la fase vapor circulen con la misma velocidad.
+
+Las ecuaciones gobernantes resultantes son las ecuaciones encontradas en la literatura para el modelo HEM:
 
 $
 d/(d z) (rho v) = 0 \
-v (d v)/(d z) = -1/rho (d p)/(d z) - f/(2D) v^2 - g \
+v (d v)/(d z) = -1/rho (d p)/(d z) - f/(2D_h) v^2 - g \
 d/(d z) (rho h v) = v (d p)/(d z) + Q/(A L_h) \
 // rho = hat(f)(p,h)  
 $
 
-Donde $rho$, $v$, $p$ y $h$ representan la densidad, la velocidad, la presión y la entalpía de la mezcla agua-vapor, respectivamente.
+Donde $z$ es la posición axial a lo largo del sistema, y $rho$, $v$, $p$ y $h$ representan la densidad, la velocidad, la presión y la entalpía de la mezcla agua-vapor, respectivamente.
 
 === Propiedades termodinámicas
 
@@ -173,12 +178,12 @@ $ rho = hat(f)(p,h) $
 
 == Método numérico
 === Adimensionalización
-Se eligieron las siguientes variables adimensionales.
+Para la resolución numérica, se adimensionalizaron las ecuaciones de modo a reducir el error relativo entre las variables, que se adimensionalizaron de la siguiente manera:
 
 $
-z^* = z/L \
+z^* = z/L #h(1cm)
 rho^* = rho/rho_0 \
-v^* = v/v_0 \
+v^* = v/v_0 #h(1cm)
 h^* = (h - h_0)/(h_L_h - h_0) \ 
 p^* = (p - p_0)/(rho_0 g L) \
 $
@@ -192,7 +197,7 @@ d/(d z^*) (ρ^* h^* v^*) = "Ec"/"Fr"  v^* (d p^*)/(d z^*) + L/L_h\
 // ρ_0 ρ^* = hat(f)(h_0 + (h_L_h - h_0) h^*, p_0 + ρ_0 g L p^*)\
 $
 
-Donde los números de Froude y de Eckert se definen de la siguiente manera.
+Donde los números de Froude y de Eckert se definen según:
 
 $
 "Fr" &= v_0^2/(g L) \
@@ -226,9 +231,58 @@ $ (partial bold(F))/(partial x_j) approx (bold(F)(bold(Q) + delta bold(e)_j) - b
 
 Donde $bold(e)_j$ es la $j$-ésima columna de la matriz identidad.
 
+=== Experimentos numéricos
+Se evaluó el desempeño del modelo HEM comparándolo con las mediciones experimentales de #cite(<ozar>, form: "prose") y con los resultados de simulación de RELAP5/MOD3.3 producidos por #cite(<RELAP-2016>, form: "prose") en dos escenarios distintos. Las condiciones utilizadas en cada escenario se resumen en la @conditions.
 
+// #table(
+//   columns: 4,
+//   stroke: none,
+//   align: center,
+//   [$P_"in"$],         [[kPa]],           [498],  [181],
+//   [$v_"in"$],         [[m/s]],           [0.24], [0.24],
+//   [$Delta T_"sub"$],  [[ºC]],            [30],   [19],
+//   [$q'' ""$],         [[kW/m#super[2]]], [156],  [56],
+// )
+
+#figure(
+table(
+  columns: 5,
+  stroke: none,
+  align: center,
+  table.hline(),
+  [Caso],
+  [$P_"in"$],       
+  [$v_"in"$],       
+  [$Delta T_"sub"$],
+  [$q'' ""$],       
+  table.hline(),
+  [1],
+  [498], [0.24], [30], [156],
+  [2],
+  [181], [0.24], [19], [56],
+  table.hline(),
+),
+  caption: []
+) <conditions>
 
 =  Resultados y Discusión
+En las Figuras 1 y 2 se observan los resultados de los dos casos analizados.
+
+Puede verse que el modelo HEM reproduce con alta fidelidad la temperatura alcanzada por la mezcla agua-vapor.
+
+Del mismo modo, la predicción del perfil de presión es satisfactoria al principio, pero en el punto de cambio de pendiente sobrepredice la presión de la mezcla agua-vapor.
+Esto puede explicarse teniendo en cuenta que este cambio de pendiente ocurre en el punto donde empieza el cambio de fase. De este modo, el modelo HEM predice correctamente la presión del sistema mientras el sistema se mantenga en estado líquido, y sufre de errores en cuanto aparece la fase vapor.
+
+Los problemas del modelo HEM quedan evidenciados en los resultados de la predicción del perfil de la fracción de vacío.
+
+En la @subcooled pueden observarse las falencias del modelo HEM en capturar fenómenos de ebullición subenfriada y condensación.
+
+Mientras que se sigue capturando el fenómeno general, el modelo HEM no toma en cuenta los efectos de la ebullición subenfriada _(subcooled boiling)_.
+El cambio de fase, en lugar de producirse gradualmente debido a la generación de vapor previa a la saturación, ocurre bruscamente cuando la temperatura de saturación es alcanzada.
+Asimismo, la fracción de vapor máxima alcanzada es sobrepredicha debido a que el modelo HEM no toma en cuenta efectos de condensación.
+Esto es, como toda la mezcla se halla en equilibrio termodinámico y la fracción de vacío es calculada exclusivamente a partir de la presión y la temperatura de la mezcla, no se permite el retorno de la fase vapor a fase líquida.
+
+En la @flashing del mismo modo se observa que el modelo HEM es incapaz de reproducir el leve aumento en la fracción de vacío en la sección calentada debido a la ebullición subenfriada. Sin embargo, a diferencia de los resultados de RELAP5/MOD3.3, sí captura la vaporización flash instantánea que se produce por el descenso de la presión.
 
 #place(
   auto,
@@ -236,7 +290,7 @@ Donde $bold(e)_j$ es la $j$-ésima columna de la matriz identidad.
   float: true,
   [#figure(
     image("figs/fig_3.svg"),
-    caption: [],
+    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el Caso 1.],
 
   ) <subcooled>]
 )
@@ -247,7 +301,7 @@ Donde $bold(e)_j$ es la $j$-ésima columna de la matriz identidad.
   float: true,
   [#figure(
     image("figs/fig_8.svg"),
-    caption: [],
+    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el Caso 2.],
 
   ) <flashing>]
 )
