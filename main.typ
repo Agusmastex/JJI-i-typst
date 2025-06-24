@@ -44,39 +44,45 @@ Facultad de Ciencias Químicas
 #text(lang: "en")[
 *Abstract*\
 
+Due to the widespread use of natural circulation loops in passive safety systems of nuclear reactors, there is significant interest in modeling the phenomena involved in the dynamics of two-phase flow in such systems.
+This work explores the performance of the one-dimensional Homogeneous Equilibrium Model (HEM) to simulate steady-state water–steam flows in the ascending section of a natural circulation loop.
+The modeled domain corresponds to a vertical annulus that includes a heated region followed by an adiabatic section.
+The HEM is based on three conservation equations, mass, momentum, and energy, formulated for the water–steam mixture.
+These equations were discretized using a finite difference upwind scheme and solved via the Newton-Raphson method, with numerical evaluation of the Jacobian matrix.
+The simulation results were compared with data from the literature, including experimental measurements and simulations performed with the RELAP5/MOD3.3 code, a widely used tool in the thermal-hydraulic analysis of nuclear reactors.
+The HEM showed good agreement with temperature profiles but exhibited limitations in predicting the pressure drop beyond the boiling point, as well as in accurately estimating the void fraction profile, particularly in the presence of subcooled boiling and condensation phenomena.
+
 Keywords:
-//
-1D Two-phase Flow,
-Homogeneous Equilibirum Model (HEM),
-Natural Circulation Loop
-// Finite difference,
-// Newton-Raphson method,
-// Passive Cooling Systems,
-// Nuclear Safety,
-.
+Two-phase flow,
+One-dimensional Homogeneous Equilibrium Model (HEM),
+Natural circulation loop,
+Finite difference method,
+Passive cooling systems.
+
 ]
 
 #pagebreak()
 
 *Resumen*\
-Debido a la amplia utilización de ciclos de circulación natural en sistemas de seguridad pasivos para reactores nucleares, existe un alto grado de interés en modelar los fenómenos que ocurren en la dinámica de su flujo cuando operan en régimen bifásico.
-Este trabajo presenta la exploración de la validez del Modelo de Equilibrio Homogéneo unidimensional para modelar flujos de agua-vapor en estado estacionario en la sección ascendente de un ciclo de circulación natural.
-La región modelada consiste de un ánulo con una región con calefacción seguida de una sección adiabática.
-El modelo es conformado por tres ecuaciones de conservación formuladas en torno a la mezcla agua-vapor, y se corresponden con la masa, cantidad de movimiento y energía de la mezcla.
-Las ecuaciones fueron discretizadas utilizando un esquema upwind de diferencias finitas, y resueltas mediante el método de Newton-Raphson, calculando el jacobiano numéricamente.
-Se compararon los resultados obtenidos tanto con datos experimentales de la literatura como con resultados obtenidos por RELAP5/MOD3.3, un código de simulación para sistemas los térmico-hidráulicos de reactores nucleares.
-Se encontró que el modelo estudiado reproduce con fidelidad los perfiles de temperatura, pero posee limitaciones en cuanto a la predicción de la caída de presión posterior al punto de ebullición saturada; y respecto a la predicción cuantitativa del perfil de fracción de vacío teniendo en cuenta los fenómenos de ebullición subenfriada y condensación.
+Debido al uso extendido de ciclos de circulación natural en sistemas de seguridad pasivos de los reactores nucleares, existe un alto interés en modelar los fenómenos que intervienen en la dinámica del flujo bifásico en estos sistemas.
+En este trabajo se explora el desempeño del Modelo de Equilibrio Homogéneo (HEM, por sus siglas en ingles) unidimensional para simular flujos de agua-vapor en estado estacionario en la sección ascendente de un ciclo de circulación natural.
+El dominio modelado corresponde a un ánulo vertical que incluye una región de calentamiento seguida de una sección adiabática.
+El modelo HEM se basa en tres ecuaciones de conservación: masa, cantidad de movimiento y energía, formuladas para la mezcla agua-vapor.
+Estas ecuaciones fueron discretizadas mediante un esquema upwind de diferencias finitas, y resueltas utilizando el método de Newton-Raphson, con evaluación numérica del jacobiano.
+Los resultados de las simulaciones con el modelo HEM se compararon con los resultados presentados en la literatura compuestos por datos experimentales y simulaciones obtenidas con el código RELAP5/MOD3.3, ampliamente utilizado en el análisis termo-hidráulico de reactores nucleares.
+Se observa que el modelo HEM reproduce con fidelidad los perfiles de temperatura, aunque presenta limitaciones al predecir la caída de presión a partir del punto de ebullición, así como en la estimación del perfil de fracción de vacío, particularmente en presencia de fenómenos como la ebullición subenfriada y la condensación.
+
 
 Palabras clave:
 //
-Flujo bifásico 1D,
-Modelo de Equilibrio Homogéneo (HEM),
+Flujo bifásico,
+Modelo de Equilibrio Homogéneo (HEM) unidimensional,
 Ciclo de circulación natural,
-// Diferencias finitas,
+Diferencias finitas,
 // Método de Newton-Raphson,
-// Sistemas de refrigeración pasivos,
+Sistemas de refrigeración pasivos.
 // Seguridad nuclear,
-.
+
 
 #pagebreak()
 
@@ -90,29 +96,38 @@ Ciclo de circulación natural,
 
 = Introducción
 
-Con el accidente de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear
+
+Los sistemas de seguridad pasivos han ganado creciente protagonismo en el diseño de reactores nucleares, especialmente tras el accidente de Fukushima en 2011, que evidenció las limitaciones de los sistemas activos dependientes de fuentes externas de energía @IAEA-SSR21. 
+A diferencia de estos últimos, los sistemas pasivos operan aprovechando fenómenos físicos naturales, como la gravedad, la convección natural o las diferencias de presión @IAEA-TECDOC-626.
+
+//Con el accidente de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear
 // @moving-to-passive-designs
-@IAEA-SSR21.
+//@IAEA-SSR21.
 // @role-of-passive-severe-accident
-Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos
-@IAEA-TECDOC-626.
+//Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos @IAEA-TECDOC-626.
 
-La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs)
+La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes severos
 @ESBWR-LOCA.
-En el caso de que un evento como este sea acompañado por la ausencia de una fuente de energía eléctrica, sea por parte de la red o por generadores independientes, un sistema de refrigeración activo no cumpliría su función de disipar el calor residual del núcleo. Este fue el caso del accidente de Fukushima
-@Fukushima-book.
+En situaciones donde un evento de pérdida de refrigerante se ve acompañado por la interrupción del suministro eléctrico, ya sea desde la red o desde generadores de respaldo, los sistemas de refrigeración activos no pueden cumplir su función de disipar el calor residual del núcleo. Esta fue precisamente la situación ocurrida durante el accidente de Fukushima, donde la pérdida total de energía impidió la operación de los sistemas de enfriamiento, agravando significativamente las consecuencias del evento.
 
-Dado esto, la implementación de sistemas de refrigeración pasivos en los reactores nucleares es crucial, de modo a lograr disipar el calor residual de la reacción nuclear por un lapso de tiempo suficiente para dar lugar a que puedan tomarse medidas correctivas necesarias para evitar una catástrofe nuclear.
+
+En este contexto, la incorporación de sistemas de refrigeración pasivos en los reactores nucleares resulta fundamental, ya que permiten disipar el calor residual generado por la reacción nuclear durante un periodo suficientemente prolongado, brindando así el margen necesario para implementar medidas correctivas y evitar una catástrofe nuclear.
 // @cite here
 
-Un diseño común utilizado para refrigerar el núcleo en caso de accidentes es el Ciclo de Circulación Natural (_Natural Circulation Loop_, NCL).
-Los NCLs impulsan el flujo de agua refrigerante utilizando únicamente el calor del núcleo como fuente de energía.
-El flujo ocurre debido a diferencias de densidad causadas tanto por cambios en la temperatura, como cambios de fase. 
+Una de las configuraciones más empleadas en estos sistemas es el Ciclo de Circulación Natural (_Natural Circulation Loop_, NCL), el cual permite remover calor sin necesidad de elementos activos. En este tipo de ciclos, el flujo del refrigerante es impulsado únicamente por el calor proveniente del núcleo, aprovechando las diferencias de densidad inducidas tanto por los gradientes de temperatura como por los cambios de fase del fluido.
+
+
+//Dado esto, la implementación de sistemas de refrigeración pasivos en los reactores nucleares es crucial, de modo a lograr disipar el calor residual de la reacción nuclear por un lapso de tiempo suficiente para dar lugar a que puedan tomarse medidas correctivas necesarias para evitar una catástrofe nuclear.
+// @cite here
+
+//Un diseño común utilizado para refrigerar el núcleo en caso de accidentes es el Ciclo de Circulación Natural (_Natural Circulation Loop_, NCL).
+//Los NCLs impulsan el flujo de agua refrigerante utilizando únicamente el calor del núcleo como fuente de energía.
+//El flujo ocurre debido a diferencias de densidad causadas tanto por cambios en la temperatura, como cambios de fase. 
 
 En la Figura
 // @loop
 puede observarse un diagrama de un NCL prototípico.
-La energía ingresa en el sistema mediante un calentador, que representa el sistema cuyo calor desea disiparse. Esto produce un aumento de la temperatura en el fluido refrigerante, lo que a su vez produce una disminución de su densidad.
+La energía ingresa en el sistema mediante un calentador, que representa el sistema cuyo calor desea disiparse. Esto produce un aumento de la temperatura en el fluido refrigerante (agua), lo que a su vez produce una disminución de su densidad.
 Por fuerzas de flotación, el agua se eleva a través del tramo vertical de la tubería, y continúa su camino hasta llegar al condensador.
 En el condensador el agua vuelve a enfriarse, disminuyendo su temperatura y aumentando nuevamente su densidad. 
 Por fuerzas de gravedad, el agua cae por la tubería vertical y se encamina al calentador, completando el ciclo.
@@ -120,22 +135,60 @@ Por fuerzas de gravedad, el agua cae por la tubería vertical y se encamina al c
 Los NCLs pueden ser diseñados para operar tanto en régimen monofásico como bifásico.
 En el primer caso, el agua se mantiene en todo momento en forma líquida, y las fuerzas de flotación se manifiestan enteramente por la expansión térmica del líquido.
 En el régimen bifásico se permite que el agua experimente un cambio de fase, vaporizándose parcialmente.
-En este caso las fuerzas de flotación son mayores, dado que son producto también del cambio abrupto de densidad producido por la aparición de la fase vapor.
+En este caso, las fuerzas de flotación son más intensas, debido al cambio abrupto de densidad asociado a la formación de la fase vapor.
 
-Los NCLs monofásicos se hallan restringidos por el criterio de la temperatura de saturación
-@bhattacharyya.
-De este modo existe un gran interés en modelar los fenómenos bifásicos emergentes que tienen lugar en este tipo de NCLs.
+//En este caso las fuerzas de flotación son mayores, dado que son producto también del cambio abrupto de densidad producido por la aparición de la fase vapor.
 
-El modelado de los flujos bifásicos presenta dificultades matemáticas, en tanto es necesario rastrear las múltiples interfaces deformables entre las fases y tomar en cuenta las discontinuidades en las propiedades del fluido que ocurren en ellas
-@Ishii.
+Los NCLs que operan en régimen monofásico están limitados por el umbral impuesto por la temperatura de saturación del fluido @bhattacharyya. 
+Por ello, existe un marcado interés en modelar los fenómenos bifásicos que emergen en estos sistemas, dado que permiten extender su capacidad de remoción de calor más allá de dicho límite.
+//cite
 
-Debido a esto, la metología comúnmente utilizada en el modelado de flujos bifásicos en tuberías es el de promediar las cantidades en la sección transversal, obteniéndose un modelo unidimensional.
-Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_ @Ishii.
+//Los NCLs monofásicos se hallan restringidos por el criterio de la temperatura de saturación @bhattacharyya.
+//De este modo existe un gran interés en modelar los fenómenos bifásicos emergentes que tienen lugar en este tipo de NCLs.
 
-Existen ya una diversidad de resolvedores complejos de uso comercial como
-RELAP5 y TRACE, que modelan el flujo bifásico 1D en los sistemas térmico-hidráulicos de un reactor nuclear @RELAP @TRACE.
+//El modelado de los flujos bifásicos presenta dificultades matemáticas, en tanto es necesario rastrear las múltiples interfaces deformables entre las fases y tomar en cuenta las discontinuidades en las propiedades del fluido que ocurren en ellas @Ishii.
 
-En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM _(Homogeneous Equilibrium Model)_ en el lenguaje de programación Julia para la simulación del estado estacionario del sistema.
+El modelado de flujos bifásicos plantea importantes desafíos matemáticos, ya que implica rastrear múltiples interfaces deformables entre las fases y considerar las discontinuidades en las propiedades del fluido que se manifiestan en dichas interfaces @Ishii.
+
+Para superar estas dificultades, una metodología comúnmente empleada en el modelado de flujos bifásicos en tuberías consiste en realizar un promediado sobre la sección transversal del conducto, lo que permite obtener modelos unidimensionales @Ishii.
+
+//Debido a esto, la metología comúnmente utilizada en el modelado de flujos bifásicos en tuberías es el de promediar las cantidades en la sección transversal, obteniéndose un modelo unidimensional.
+//Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_ @Ishii.
+
+En la actualidad, existen diversos códigos de simulación complejos y ampliamente utilizados, como RELAP5 y TRACE, que implementan modelos de flujo bifásico unidimensional para el análisis termo-hidráulico de sistemas en reactores nucleares @RELAP @TRACE.
+
+
+
+//Existen ya una diversidad de resolvedores complejos de uso comercial como
+//RELAP5 y TRACE, que modelan el flujo bifásico 1D en los sistemas térmico-hidráulicos de un reactor nuclear @RELAP @TRACE.
+
+Sin embargo, el uso de estos códigos comerciales implica además de su costo monetario de la licencia, una elevada complejidad para modificar su código fuente para análisis e investigaciones posteriores.
+En este contexto, se considera fundamental el desarrollo de un código propio que no solo permita simular el comportamiento estacionario del flujo bifásico, sino que también sea lo suficientemente flexible y transparente como para ser modificado y adaptado en estudios posteriores, tales como análisis de estabilidad y sensibilidad. Esta necesidad justifica la elección de un modelo simplificado que pueda ser implementado, comprendido y extendido con facilidad.
+
+
+//computacional y una curva de aprendizaje considerable, lo que dificulta su aplicación en etapas tempranas de diseño o en estudios exploratorios. En este contexto, surge la necesidad de evaluar modelos simplificados que, pese a sus limitaciones, permitan capturar los fenómenos dominantes del flujo bifásico con un costo computacional reducido y mayor facilidad de implementación.
+
+
+
+//Así, en este trabajo se presenta la implementación numérica de un modelo simplificado, el Modelo de Equilibrio Homogéneo (_Homogeneous Equilibrium Model_, HEM), en el lenguaje de programación Julia, para la simulación del régimen estacionario de una de las secciones de un ciclo de circulación natural.
+
+Así, el presente trabajo se enfoca en la implementación en el lenguaje de programación Julia y validación de un modelo unidimensional de equilibrio homogéneo (_Homogeneous Equilibrium Model_, HEM) para simular el flujo bifásico agua-vapor en estado estacionario, aplicado a la sección ascendente de un ciclo de circulación natural, que es una de las secciones más crítica en el modelado debido a los efectos del cambio de fase que conlleva a discontinuidades en las propiedades y modificaciones en las pérdidas por fricción y en la transferencia de energía. 
+
+El dominio modelado corresponde a un ánulo vertical que incluye una región de calentamiento seguida de una sección adiabática, configuraciones que reflejan condiciones típicas en sistemas de refrigeración pasiva de reactores nucleares.
+
+El modelo matemático se compone de las ecuaciones de conservación de masa, cantidad de movimiento y energía de la mezcla agua-vapor, formuladas bajo el supuesto de equilibrio térmico y mecánico entre fases. Estas ecuaciones fueron discretizadas mediante un esquema upwind de diferencias finitas y resueltas empleando el método de Newton-Raphson, con cálculo numérico del jacobiano. 
+
+Finalmente, los resultados obtenidos se comparan con datos disponibles en la literatura, que incluyen tanto mediciones experimentales como simulaciones realizadas con el código RELAP5/MOD3.3, con el objetivo de evaluar el desempeño y las limitaciones del modelo HEM en la predicción de variables como la fracción de vacío, la temperatura y la presión a lo largo del sistema.
+
+
+*Agregar algunos resultados importantes...*
+
+
+En Sección 2, se presentan los objetivos del trabajo. Los materiales y métodos, en donde se presentan el modelo y el método numérico se exponen en Sección 3, y en Sección 4 se muestran los resultados obtenidos con las comparaciones y discusiones de los mismos.
+Finalmente, se presentan los conclusiones en Sección 5.
+
+
+//En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM _(Homogeneous Equilibrium Model)_ en el lenguaje de programación Julia para la simulación del estado estacionario del sistema.
 
 // El trabajo presenta un modelo de flujo en estado estacionario.
 // Esta decisión se fundamenta tanto en que las mediciones disponibles en la literatura analizan al sistema cuando ya alcanzó el estado estacionario, como en el hecho de que las condiciones de frontera elegidas producen un estado estacionario natural.
@@ -147,7 +200,7 @@ En este trabajo, se presenta la implementación numérica de un modelo simplific
 = Objetivos
 *Objetivo general* \
 // Implementar y validar un resolvedor de flujo agua-vapor en estado estacionario en una tubería vertical utilizando el modelo HEM 1D.
-Explorar la validez del modelo HEM para modelar flujos de agua-vapor en estado estacionario en un ánulo vertical con calefacción.
+Explorar el desempeño del modelo HEM para modelar flujos de agua-vapor en estado estacionario en un ánulo vertical con calentamiento.
 
 *Objetivos específicos* \
 - Derivar las ecuaciones 1D de conservación de masa, cantidad de movimiento y energía para un flujo bifásico agua-vapor en un ánulo vertical.
