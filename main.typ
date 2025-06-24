@@ -44,14 +44,39 @@ Facultad de Ciencias Químicas
 #text(lang: "en")[
 *Abstract*\
 
-Keywords: Word 1, Word 2, Word 3, Word 4, Word 5, 
+Keywords:
+//
+1D Two-phase Flow,
+Homogeneous Equilibirum Model (HEM),
+Natural Circulation Loop
+Finite difference,
+Newton-Raphson method,
+// Passive Cooling Systems,
+// Nuclear Safety,
+.
 ]
 
 #pagebreak()
 
 *Resumen*\
+Debido a la amplia utilización de ciclos de circulación natural en sistemas de seguridad pasivos para reactores nucleares, existe un alto grado de interés en modelar los fenómenos que ocurren en la dinámica de su flujo cuando operan en régimen bifásico.
+Este trabajo presenta la exploración de la validez del Modelo de Equilibrio Homogéneo unidimensional para modelar flujos de agua-vapor en estado estacionario en la sección ascendente de un ciclo de circulación natural.
+La región modelada consiste de un ánulo con una región con calefacción seguida de una sección adiabática.
+El modelo es conformado por tres ecuaciones de conservación formuladas en torno a la mezcla agua vapor, y se corresponden con la masa, cantidad de movimiento y energía de la mezcla.
+Las ecuaciones fueron discretizadas utilizando un esquema upwind de diferencias finitas, y resueltas mediante el método de Newton-Raphson, calculando el jacobiano numéricamente.
+Se compararon los resultados obtenidos tanto con datos experimentales de la literatura como con resultados obtenidos RELAP5/MOD3.3, un código de simulación para sistemas los térmico-hidráulicos de reactores nucleares.
+Se encontró que el modelo estudiado reproduce con fidelidad los perfiles de temperatura, pero posee limitaciones en cuanto a la predicción de la caída de presión posterior al punto de ebullición saturada; y respecto a la predicción cuantitativa del perfil de fracción de vacío teniendo en cuenta los fenómenos de ebullición subenfriada y condensación.
 
-Palabras clave: Palabra 1, Palabra 2, Palabra 3, Palabra 4, Palabra 5.
+Palabras clave:
+//
+Flujo bifásico 1D,
+Modelo de Equilibrio Homogéneo (HEM),
+Ciclo de circulación natural,
+// Diferencias finitas,
+// Método de Newton-Raphson,
+// Sistemas de refrigeración pasivos,
+// Seguridad nuclear,
+.
 
 #pagebreak()
 
@@ -68,16 +93,16 @@ Palabras clave: Palabra 1, Palabra 2, Palabra 3, Palabra 4, Palabra 5.
 
 // Colocar antecedentes previos a Fukushima
 
-Con el accidente de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear.
+Con el accidente de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear
 // @moving-to-passive-designs
 @IAEA-SSR21.
 // @role-of-passive-severe-accident
-Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos. 
+Con los sistemas de seguridad pasivos, se opta por depender de fenómenos físicos naturales como la gravedad o las diferencias de presión, en lugar de sistemas que dependen de fuentes de energía externa como bombas, ventiladores, u otros elementos activos
 @IAEA-TECDOC-626.
 
-La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs).
+La ventaja de estos sistemas de seguridad pasivos yace en su robustez ante escenarios de accidentes, como los Aciddentes por Pérdida de Refrigerante (LOCAs)
 @ESBWR-LOCA.
-En el caso de que un evento como este sea acompañado por la ausencia de una fuente de energía eléctrica, sea por parte de la red o por generadores independientes, un sistema de refrigeración activo no cumpliría su función de disipar el calor residual del núcleo. Este fue el caso del accidente de Fukushima. 
+En el caso de que un evento como este sea acompañado por la ausencia de una fuente de energía eléctrica, sea por parte de la red o por generadores independientes, un sistema de refrigeración activo no cumpliría su función de disipar el calor residual del núcleo. Este fue el caso del accidente de Fukushima
 @Fukushima-book.
 
 Dado esto, la implementación de sistemas de refrigeración pasivos en los reactores nucleares es crucial, de modo a lograr disipar el calor residual de la reacción nuclear por un lapso de tiempo suficiente para dar lugar a que puedan tomarse medidas correctivas necesarias para evitar una catástrofe nuclear.
@@ -95,30 +120,24 @@ En el condensador el agua vuelve a enfriarse, disminuyendo su temperatura y aume
 Por fuerzas de gravedad, el agua cae por la tubería vertical y se encamina al calentador, completando el ciclo.
 
 Los NCLs pueden ser diseñados para operar tanto en régimen monofásico como bifásico.
-En el régimen monofásico, el agua se mantiene en todo momento en forma líquida, y las fuerzas de flotación se manifiestan enteramente por la expansión térmica del líquido.
+En el primer caso, el agua se mantiene en todo momento en forma líquida, y las fuerzas de flotación se manifiestan enteramente por la expansión térmica del líquido.
 En el régimen bifásico se permite que el agua experimente un cambio de fase, vaporizándose parcialmente.
 En este caso las fuerzas de flotación son producto también del cambio abrupto de densidad producido por la aparición de la fase vapor.
 
 Los NCLs monofásicos se hallan restringidos por el criterio de la temperatura de saturación
 @bhattacharyya.
-De este modo existe un gran interés en modelar los fenómenos bifásicos emergentes que tienen lugar en los NCLs bifásicos.
+De este modo existe un gran interés en modelar los fenómenos bifásicos emergentes que tienen lugar en este tipo de NCLs.
 
-El modelado de flujo bifásico presenta dificultades matemáticas, en tanto es necesario rastrear las múltiples interfaces deformables entre las fases y tomar en cuenta las discontinuidades en las propiedades del fluido que ocurren en ellas.
-@Ishii
+El modelado de flujo bifásico presenta dificultades matemáticas, en tanto es necesario rastrear las múltiples interfaces deformables entre las fases y tomar en cuenta las discontinuidades en las propiedades del fluido que ocurren en ellas
+@Ishii.
 
 Debido a esto, la metología comúnmente utilizada en el modelado de flujos bifásicos en tuberías es el de promediar las cantidades en la sección transversal, obteniéndose un modelo unidimensional.
-Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_.
+Este es el caso del modelo _two-fluid_ y el modelo _drift-flux_ @Ishii.
 
 Existen ya una diversidad de resolvedores complejos de uso comercial como
-RELAP5
-@RELAP
-y 
-TRACE 
-@TRACE
-,
-que modelan el flujo bifásico 1D en los sistemas térmico-hidráulicos de un reactor nuclear.
+RELAP5 y TRACE, que modelan el flujo bifásico 1D en los sistemas térmico-hidráulicos de un reactor nuclear @RELAP @TRACE.
 
-En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM _(Homogeneous Equilibrium Model)_ en el lenguaje de programación Julia.
+En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM _(Homogeneous Equilibrium Model)_ en el lenguaje de programación Julia para la simulación del estado estacionario del sistema.
 
 // El trabajo presenta un modelo de flujo en estado estacionario.
 // Esta decisión se fundamenta tanto en que las mediciones disponibles en la literatura analizan al sistema cuando ya alcanzó el estado estacionario, como en el hecho de que las condiciones de frontera elegidas producen un estado estacionario natural.
@@ -161,7 +180,7 @@ Partiendo de las ecuaciones de conservación de masa, cantidad de movimiento y e
 // Se impuso equilibrio termodinámico instantáneo entre las dos fases, así como el no-deslizamiento entre fases, de modo a que ambas la fase líquida y la fase vapor circulen con la misma velocidad.
 Se asumió un alto grado de acoplamiento mecánico entre las dos fases, de modo a que ambas circulen a través del sistema 1D con una velocidad común $v$.
 
-Las ecuaciones gobernantes resultantes son las encontradas en la literatura para el modelo HEM en estado estacionario:
+Las ecuaciones gobernantes resultantes son las encontradas en la literatura @todreaskazimi2 para el modelo HEM adaptadas para el estado estacionario:
 
 $
 d/(d z) (rho v) = 0 \
@@ -182,7 +201,7 @@ S_h = cases(
 )
 $
 
-Donde $D_h$, $A$ y $L_h$ representan el diámetro hidráulico, el área de flujo del ánulo, y la longitud de la región calentada, respectivamente.
+Donde $A$, $L_h$ y $Q$ representan el área de flujo anular, la longitud de la región calentada, y la entrada total de calor, respectivamente.
 
 $f$ es el factor de fricción de Darcy, que se calcula utilizando el modelo propuesto por #cite(<churchill>, form: "prose"), según:
 
@@ -241,11 +260,13 @@ $
 $
 
 === Discretización
-La discretización de las ecuaciones se realizó empleando un esquema upwind de diferencias finitas.
+La discretización de las ecuaciones adimensionalizadas se realizó empleando un esquema de diferencias finitas.
 
-Se colocaron $N$ nodos $[z_1^*, ..., z_N^*]$ espaciados uniformemente a una distancia $Delta z^* = 1/N$ entre sí a lo largo del dominio computacional, donde todas las variables son caluladas de manera sencilla sobre los mismos. Por ejemplo, para la densidad, $rho_i = rho(z_i).$
+Se colocaron $N$ nodos $[z_1^*, ..., z_N^*]$ espaciados uniformemente a una distancia $Delta z^* = 1/N$ entre sí a lo largo del dominio computacional, donde todas las variables son caluladas de manera sencilla sobre los mismos. Por ejemplo, para la densidad, $rho_i^* = rho^*(z_i^*).$
 
 Para las derivadas espaciales, se utilizó el esquema upwind.
+
+Las ecuaciones discretizadas resultan:
 
 $
 (rho_i v_i - rho_(i-1) v_(i-1) )/(Delta z) = 0 \
@@ -253,6 +274,8 @@ v_i (v_i - v_(i-1))/(Delta z) = -1/rho_i (p_i - p_(i-1))/(Delta z) - f/(2 D_h) v
 (rho_i h_i v_i - rho_(i-1) h_(i-1) v_(i-1))/(Delta z) = v_i (p_i - p_(i-1))/(Delta z) + Q_i/(A L_h) \ 
 rho_i = hat(f)(p_i, h_i) \
 $
+
+Donde se suprimió la notación de modo a que $rho_i$ representa a $rho_i^*$.
 
 === Resolución
 
@@ -277,7 +300,7 @@ $ (partial bold(F))/(partial x_j) approx (bold(F)(bold(Q) + delta bold(e)_j) - b
 
 Donde $bold(e)_j$ es la $j$-ésima columna de la matriz identidad.
 
-=== Experimentos numéricos
+== Experimentos numéricos
 Se evaluó el desempeño del modelo HEM comparándolo con las mediciones experimentales de #cite(<ozar>, form: "prose") y con los resultados de simulación de RELAP5/MOD3.3 producidos por #cite(<RELAP-2016>, form: "prose") en dos escenarios distintos.
 En ambos escenarios se simuló la entrada de agua líquida subenfriada, con distintos valores de presión de entrada $P_"in"$, velocidad de entrada $v_"in"$, subenfriamiento $Delta T_"sub"$ en la entrada al ánulo, y con distintos valores de densidad de flujo de calor $q''$ provista por el calentador. Las condiciones experimentales que se simularon se resumen en la Tabla @conditions.
 
@@ -320,56 +343,63 @@ table(
 ) <conditions>
 
 =  Resultados y Discusión
-En las Figuras @subcooled y @flashing se observan los resultados de los dos casos analizados.
 
-Puede verse que el modelo HEM reproduce con alta fidelidad el perfil de temperaturas desarrollado por la mezcla agua-vapor en estado estacionario.
+En la Figura @subcooled (a) se observa que, si bien el modelo HEM captura el fenómeno general de transición a fase vapor, no reproduce cuantitativamente el perfil axial de fracción de vacío.
 
-Del mismo modo, la predicción del perfil de presión es satisfactoria en un primer tramo, pero en el punto de cambio de pendiente sobrepredice la presión de la mezcla agua-vapor.
-Este cambio de pendiente ocurre en el punto donde empieza el cambio de fase. De este modo, el modelo HEM predice correctamente la presión del sistema mientras la mezcla se mantenga en estado líquido, y subestima la caída de presión en cuanto aparece la fase vapor.
+Para estas condiciones experimentales, debería observarse una ebullición subenfriada _(subcooled boiling)_. El modelo HEM, en lugar de predecir un cambio de fase gradual con generación de vapor previa a la saturación, predice un salto brusco en la fracción de vacío cuando el líquido alcanza la temperatura de saturación.
 
-Esto tiene su explicación en que la introducción de la fase vapor trae consigo nuevas fuerzas de fricción que no son contempladas por el modelo.
-Las burbujas o los _slugs_ de vapor producen un impedimento al flujo debido a las fuerzas de rozamiento asociadas a su presencia, lo cual trae consigo una caída de presión mayor asociada.
-Esto podría corregirse seleccionando un modelo para el factor de fricción que refleje esta dinámica característica del flujo bifásico.
+Del mismo modo, la fracción de vapor máxima alcanzada es sobrestimada debido a que el modelo HEM no considera efectos de condensación. Como la fracción de vacío es calculada exclusivamente a partir de la presión y la temperatura de la mezcla, $alpha$ no posee una ecuación de transporte asociada a ella. Debido a esto, no puede capturar fenómenos de generación (ebullición subenfriada) y consumo (condensación) mediante modelos adsociados al término fuente en su ecuación de transporte.
 
-Las limitaciones del modelo HEM quedan evidenciadas en los resultados de la predicción del perfil de la fracción de vacío.
-
-En la Figura @subcooled pueden observarse las falencias del modelo HEM en capturar fenómenos de ebullición subenfriada y condensación.
-
-Mientras que se sigue capturando el fenómeno general, el modelo HEM no toma en cuenta los efectos de la ebullición subenfriada _(subcooled boiling)_.
-El cambio de fase, en lugar de producirse gradualmente debido a la generación de vapor previa a la saturación, ocurre bruscamente cuando la temperatura de saturación es alcanzada.
-
-Asimismo, la fracción de vapor máxima alcanzada es sobrepredicha debido a que el modelo HEM no toma en cuenta efectos de condensación.
-Esto es, como la fracción de vacío es calculada exclusivamente a partir de la presión y temperatura de la mezcla, no posee una ecuación de transporte asociada a ella, y no es posible capturar fenómenos de generación (ebullición subenfriada) y consumo (condensación) mediante modelos asociados al término de fuente en su ecuación de transporte.
-
-En la Figura @flashing se observa que el modelo HEM es incapaz de reproducir el pequeño aumento en la fracción de vacío en la sección calentada debido a la ebullición subenfriada.
-Sin embargo, a diferencia de los resultados de RELAP5/MOD3.3, sí captura cualitativamente la vaporización instantánea _(flash)_ que se produce por el descenso de la presión.
+En la Figura @subcooled (b) se aprecia la fidelidad con la que el modelo HEM reproduce el perfil axial de temperaturas. // Por qué se logra esto?
 
 #place(
   auto,
   scope: "parent",
   float: true,
+  clearance: 1.5cm,
   [#figure(
     image("figs/fig_3.svg"),
-    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el caso 1.],
+    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para las condiciones experimentales del caso 1.],
 
   ) <subcooled>]
 )
 
+En la Figura @subcooled (c) se visualiza que el modelo HEM predice satisfactoriamente el perfil axial de presión en un primer tramo; pero a partir del punto de cambio de pendiente, predice una caída de presión menor a la predicha por RELAP5/MOD3.3, que se condice con las mediciones experimentales. Este cambio de pendiente ocurre en el punto donde empieza la ebullición saturada. De este modo, el modelo HEM predice correctamente la presión del sistema mientras el fluido se mantenga en estado líquido, y subestima la caída de presión en cuanto empieza la ebullición y se genera la fase vapor.
+
+Este error en la predicción puede analizarse teniendo en cuenta las nuevas fuerzas de fricción que la fase vapor trae consigo. Estas fuerzas no son contempladas por el modelo. Las burbujas, o los _slugs_ de vapor producen un impedimento al flujo debido a las fuerzas de rozamiento en la interfase líquido-vapor; lo cual trae a su vez una mayor caída de presión asociada. Esta falencia del modelo HEM podría corregirse selecccionando un modelo para el factor de fricción que refleje esta dinámica característica del flujo bifásico.
+
+En la Figura @flashing (a) se observa que el modelo evaluado es incapaz de reproducir el pequeño pico de fracción de vacío en la sección con calefacción que se produce nuevamente debido a los efectos de ebullición subenfriada.
+
+Sin embargo, a diferencia de los resultados de RELAP5/MOD3.3, el modelo HEM sí captura cualitativamente la vaporización instantánea _(flash)_ que se produce debido a la caída de presión en la región adiabática.
+
+Los resultados de predicción del perfil de temperatura nuevamente son satisfactorios para el caso 2, como se observa en la Figura @flashing (b). Si bien no reproduce cuantitativamente las temperaturas experimentales, reproduce de manera muy próxima los resultados predichos por RELAP5/MOD3.3. 
 #place(
-  auto,
+  top,
   scope: "parent",
   float: true,
+  clearance: 1.5cm,
   [#figure(
     image("figs/fig_8.svg"),
-    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para el caso 2.],
+    caption: [Comparación del modelo HEM (azul), RELAP5 (rojo) y datos experimentales (negro) para las condiciones experimentales del caso 2.],
 
   ) <flashing>]
 )
 
+Finalmente, en la Figura @flashing (c) se observa que la predicción del perfil de presión es incluso mejor en el caso 2. Esto se debe a que el fluido permanece en estado líquido durante todo su trayecto hasta que se vaporiza instantáneamente justo antes de la salida del sistema.
+
+
 
 = Conclusiones
 
-#pagebreak()
+La exploración de la aplicabilidad del modelo HEM realizada en este trabajo revela tanto limitaciones como fortalezas del modelo HEM para la simulación de flujos bifásicos. 
+
+En ambos casos, la predicción del perfil axial de fracción de vacío es muy limitada. Por más de que se refleje el fenómeno general del cambio de fase, el modelo no logra reproducir fenómenos clave en la hidráulica térmica del flujo bifásico, tales como la ebullición subenfriada y la condensación.
+
+Sin embargo, las predicciones de los perfiles de temperatura y presión revelan que, incluso con un modelo simplificado, es posible capturar la evolución de estas dos variables a lo largo de un sistema de flujo estacionario con calefacción sin recurrir a modelos bifásicos complejos.
+
+Este trabajo sienta bases para continuar explorando la viabilidad de modelos sencillos que aún así capturen los fenómenos más relevantes de los flujos bifásicos, proporcionando un punto de partida sólido para la implementación y validación de de modelos más avanzados como el modelo _drift-flux_ o formulaciones transitorias.
+
+Como trabajo futuro, se podría revisitar este modelo incorporando tanto una ecuación de transporte para la fracción de vacío, como un modelo actualizado que capture la dinámica bifásica en la caída de presión.
 
 #bibliography(
   "references.bib",
