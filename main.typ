@@ -47,7 +47,7 @@ Facultad de Ciencias Químicas
 Due to the widespread use of natural circulation loops in passive safety systems of nuclear reactors, there is significant interest in modeling the phenomena involved in the dynamics of two-phase flow in such systems.
 This work explores the performance of the one-dimensional Homogeneous Equilibrium Model (HEM) to simulate steady-state water–steam flows in the ascending section of a natural circulation loop.
 The modeled domain corresponds to a vertical annulus that includes a heated region followed by an adiabatic section.
-The HEM is based on three conservation equations, mass, momentum, and energy, formulated for the water–steam mixture.
+The studied model is based on three conservation equations, mass, momentum, and energy, formulated for the water–steam mixture.
 These equations were discretized using a finite difference upwind scheme and solved via the Newton-Raphson method, with numerical evaluation of the Jacobian matrix.
 The simulation results were compared with data from the literature, including experimental measurements and simulations performed with the RELAP5/MOD3.3 code, a widely used tool in the thermal-hydraulic analysis of nuclear reactors.
 The HEM showed good agreement with temperature profiles but exhibited limitations in predicting the pressure drop beyond the boiling point, as well as in accurately estimating the void fraction profile, particularly in the presence of subcooled boiling and condensation phenomena.
@@ -67,10 +67,10 @@ Passive cooling systems.
 Debido al uso extendido de ciclos de circulación natural en sistemas de seguridad pasivos de los reactores nucleares, existe un alto interés en modelar los fenómenos que intervienen en la dinámica del flujo bifásico en estos sistemas.
 En este trabajo se explora el desempeño del Modelo de Equilibrio Homogéneo (HEM, por sus siglas en ingles) unidimensional para simular flujos de agua-vapor en estado estacionario en la sección ascendente de un ciclo de circulación natural.
 El dominio modelado corresponde a un ánulo vertical que incluye una región de calentamiento seguida de una sección adiabática.
-El modelo HEM se basa en tres ecuaciones de conservación: masa, cantidad de movimiento y energía, formuladas para la mezcla agua-vapor.
+El modelo estudiado se basa en tres ecuaciones de conservación: masa, cantidad de movimiento y energía, formuladas para la mezcla agua-vapor.
 Estas ecuaciones fueron discretizadas mediante un esquema upwind de diferencias finitas, y resueltas utilizando el método de Newton-Raphson, con evaluación numérica del jacobiano.
-Los resultados de las simulaciones con el modelo HEM se compararon con los resultados presentados en la literatura compuestos por datos experimentales y simulaciones obtenidas con el código RELAP5/MOD3.3, ampliamente utilizado en el análisis termo-hidráulico de reactores nucleares.
-Se observa que el modelo HEM reproduce con fidelidad los perfiles de temperatura, aunque presenta limitaciones al predecir la caída de presión a partir del punto de ebullición, así como en la estimación del perfil de fracción de vacío, particularmente en presencia de fenómenos como la ebullición subenfriada y la condensación.
+Los resultados de las simulaciones con el modelo estudiado se compararon con los resultados presentados en la literatura compuestos por datos experimentales y simulaciones obtenidas con el código RELAP5/MOD3.3, ampliamente utilizado en el análisis termo-hidráulico de reactores nucleares.
+Se observa que el modelo estudiado reproduce con fidelidad los perfiles de temperatura, aunque presenta limitaciones al predecir la caída de presión a partir del punto de ebullición, así como en la estimación del perfil de fracción de vacío, particularmente en presencia de fenómenos como la ebullición subenfriada y la condensación.
 
 
 Palabras clave:
@@ -97,7 +97,7 @@ Sistemas de refrigeración pasivos.
 = Introducción
 
 
-Los sistemas de seguridad pasivos han ganado creciente protagonismo en el diseño de reactores nucleares, especialmente tras el accidente de Fukushima en 2011, que evidenció las limitaciones de los sistemas activos dependientes de fuentes externas de energía @IAEA-SSR21. 
+Los sistemas de seguridad pasivos han ganado creciente protagonismo en el diseño de reactores nucleares @IAEA-SSR21, especialmente tras el accidente de Fukushima en 2011, que evidenció las limitaciones de los sistemas activos dependientes de fuentes externas de energía . 
 A diferencia de estos últimos, los sistemas pasivos operan aprovechando fenómenos físicos naturales, como la gravedad, la convección natural o las diferencias de presión @IAEA-TECDOC-626.
 
 //Con el accidente de Fukushima en 2011, inició un proceso de transición de los sistemas de seguridad activos hacia los sistemas de seguridad pasivos en el campo de la seguridad nuclear
@@ -124,9 +124,20 @@ Una de las configuraciones más empleadas en estos sistemas es el Ciclo de Circu
 //Los NCLs impulsan el flujo de agua refrigerante utilizando únicamente el calor del núcleo como fuente de energía.
 //El flujo ocurre debido a diferencias de densidad causadas tanto por cambios en la temperatura, como cambios de fase. 
 
-En la Figura
-// @loop
-puede observarse un diagrama de un NCL prototípico.
+
+#place(
+  auto,
+  scope: "parent",
+  float: true,
+  clearance: 1.5cm,
+  [#figure(
+    image("figs/loop.svg"),
+    caption: [Esquema de un ciclo de circulación natural bifásico],
+
+  ) <loop>]
+)
+
+En la Figura @loop puede observarse un esquema de un NCL prototípico.
 La energía ingresa en el sistema mediante un calentador, que representa el sistema cuyo calor desea disiparse. Esto produce un aumento de la temperatura en el fluido refrigerante (agua), lo que a su vez produce una disminución de su densidad.
 Por fuerzas de flotación, el agua se eleva a través del tramo vertical de la tubería, y continúa su camino hasta llegar al condensador.
 En el condensador el agua vuelve a enfriarse, disminuyendo su temperatura y aumentando nuevamente su densidad. 
@@ -180,12 +191,12 @@ El modelo matemático se compone de las ecuaciones de conservación de masa, can
 
 Finalmente, los resultados obtenidos se comparan con datos disponibles en la literatura, que incluyen tanto mediciones experimentales como simulaciones realizadas con el código RELAP5/MOD3.3, con el objetivo de evaluar el desempeño y las limitaciones del modelo HEM en la predicción de variables como la fracción de vacío, la temperatura y la presión a lo largo del sistema.
 
+Se encontró que el modelo HEM reproduce con fidelidad el perfil de temperaturas de tanto las mediciones experimentales de la literatura, como los resultados producidos por RELAP5/MOD3.3.
+Sin embargo, se observaron desviaciones en el perfil de presiones y de fracción de vacío.
+El modelo estudiado no reproduce cuantitativamente las fracciones de vacío experimentales, y posee dificultades en capturar fenómenos bifásicos como la ebullición subenfriada, y la condensación.
 
-*Agregar algunos resultados importantes...*
-
-
-En Sección 2, se presentan los objetivos del trabajo. Los materiales y métodos, en donde se presentan el modelo y el método numérico se exponen en Sección 3, y en Sección 4 se muestran los resultados obtenidos con las comparaciones y discusiones de los mismos.
-Finalmente, se presentan los conclusiones en Sección 5.
+En la Sección 2, se presentan los objetivos del trabajo. Los materiales y métodos, en donde se presentan el modelo y el método numérico se exponen en la Sección 3, y en la Sección 4 se muestran los resultados obtenidos con las comparaciones y discusiones de los mismos.
+Finalmente, se presentan los conclusiones en la Sección 5.
 
 
 //En este trabajo, se presenta la implementación numérica de un modelo simplificado, el modelo HEM _(Homogeneous Equilibrium Model)_ en el lenguaje de programación Julia para la simulación del estado estacionario del sistema.
@@ -294,7 +305,7 @@ $
 === Discretización
 La discretización de las ecuaciones adimensionalizadas se realizó empleando un esquema de diferencias finitas.
 
-Se colocaron $N$ nodos $[z_1^*, ..., z_N^*]$ espaciados uniformemente a una distancia #colbreak() $Delta z^* = 1/N$ entre sí a lo largo del dominio computacional, donde todas las variables son caluladas de manera sencilla sobre los mismos. Esto es, $psi_i^* = psi^*(z_i^*)$ para $psi in {rho, v, h, p}$.
+Se colocaron $N$ nodos $[z_1^*, ..., z_N^*]$ espaciados uniformemente a una distancia $Delta z^* = 1/N$ entre sí a lo largo del dominio computacional, donde todas las variables son caluladas de manera sencilla sobre los mismos. Esto es, $psi_i^* = psi^*(z_i^*)$ para $psi in {rho, v, h, p}$.
 
 Para las derivadas espaciales, se utilizó el esquema upwind, donde cada derivada se calcula en tomando una diferencia finita teniendo en cuenta el sentido del flujo.
 
